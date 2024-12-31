@@ -21,3 +21,4 @@ venv/
 # Logs and debugging files
 *.log
 *.sqlite3
+test_service.log

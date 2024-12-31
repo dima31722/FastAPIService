@@ -1,7 +1,7 @@
 from passlib.context import CryptContext
 import os 
 from dotenv import load_dotenv
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import jwt
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -24,7 +24,7 @@ ALGORITHM = os.getenv("ALGORITHM")
 def create_token(user:dict, delta_minutes: int = 10):
     #delta_minutes - when the token is invalid anymore, after x minutes
     data_to_encode = user.copy()
-    expire_time = datetime.utcnow() + timedelta(minutes=delta_minutes)
+    expire_time = datetime.now(timezone.utc) + timedelta(minutes=delta_minutes)
     data_to_encode.update({'exp': expire_time})
     return jwt.encode(data_to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
@@ -56,12 +56,3 @@ class TokenAuthorizationMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
         return response
         
-
-# if __name__ == "__main__":
-#     password = "mypassword123"
-#     hashed = create_hash_password(password)
-#     print(f"Plain Password: {password}")
-#     print(f"Hashed Password: {hashed}")
-#     print(f"Verification (correct password): {verify_hashing('mypassword123', hashed)}")  # Should be True
-#     print(f"Verification (wrong password): {verify_hashing('wrongpassword', hashed)}")
-    

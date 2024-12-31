@@ -1,4 +1,4 @@
-# XpanderProjectService
+# FastAPIService
  FastAPI-based usermanagment service 
 
 ## Features
@@ -39,11 +39,12 @@
     if using ububtu - run "redis-cli ping"
     expected return: PONG
 
-
 ## run the project 
     ```
     python main.py
-    
+
+
+
 
 
 
