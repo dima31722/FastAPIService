@@ -43,6 +43,10 @@
       - redis-cli ping (expected: PONG)
    - check server can run throw windows firewall
 
+2. - check password and host in /path/to/redis.conf
+      - password in line : requirepass "mypassword123"
+      - host in line: bind 127.0.0.1
+
 
 ## .env file
 1. create .env file for the project with this env variables:
@@ -65,9 +69,8 @@
 ## run the project 
    ```bash
    python main.py
-
-   - should be: "http://127.0.0.1:8080"
    ```
+   - should be: "http://127.0.0.1:8080"
 
 ## run test file curl
 1. check that curl and jq installed in your bash
@@ -78,7 +81,7 @@
    ./test_service.sh
    ```
 
-   - test_service.log - file with the logs from curl test
+   - test_service.log - file made with the logs from curl test
 
 
 
