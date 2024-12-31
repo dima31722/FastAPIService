@@ -24,6 +24,8 @@ async def lifespan(app: FastAPI):
         await conn.run_sync(Base.metadata.create_all)
     yield
     
+    await engine.dispose()
+    
 app = FastAPI(lifespan=lifespan)
 
 #create CORS middleware
@@ -134,14 +136,9 @@ async def get_user_profile(request: Request, db: AsyncSession = Depends(get_db))
     # fastapi automatically gets from user just the relevant fields for UserProfile pydantic schema
     return user
 
-def start():
-    config = uvicorn.Config("main:app", host="127.0.0.1", port=8080, reload=True)
-    server = uvicorn.Server(config)
-    server.run()
+
+def main():
+    uvicorn.run("main:app", host="127.0.0.1", port=8080, reload=True)
 
 if __name__ == "__main__":
-    start()
-
-
-# if __name__ == "__main__":
-#     uvicorn.run("main:app", host="127.0.0.1", port=8080, reload=True)
+    main()
