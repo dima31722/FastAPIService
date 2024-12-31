@@ -16,7 +16,7 @@
    cd FastAPIService
    ```
 
-2. Install packages:
+2. Create virtual enviroment and Install packages:
    ```bash
    python -m venv venv 
    venv/Scripts/activate
@@ -39,8 +39,8 @@
 ## redis connection 
 
 1. test redis server is running:
-    if using ububtu - run "redis-cli ping"
-    expected return: PONG
+   makesure redis is running, pings and authenticated 
+
 
 ## .env file
 1. create .env file for the project with this env variables:
@@ -55,9 +55,9 @@
    SECRET_KEY = "SECRETKEY" 
    ALGORITHM = "HS256" 
 
-   REDIS_HOST = "localhost" #default
+   REDIS_HOST = 
    REDIS_PORT = "6379" #default
-   REDIS_DB = 0  # default
+   REDIS_PASSWORD = 
    
 
 ## run the project 

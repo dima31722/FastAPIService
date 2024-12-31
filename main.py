@@ -7,7 +7,6 @@ from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from authentication import create_hash_password, verify_hashing, create_token, TokenAuthorizationMiddleware
 from caching import check_cache, update_cache
-import redis as rd
 import uvicorn
 from contextlib import asynccontextmanager
 
@@ -104,7 +103,7 @@ async def update_user(req:UserUpdate, request:Request, db: AsyncSession = Depend
         user.password = create_hash_password(req.password)
     try:
         await update_cache(user)
-    except rd.exceptions.RedisError as e:
+    except Exception as e:
         pass
 
     return {"message": "User updated successfully", "username": f"{user.first_name} {user.last_name}"}
@@ -115,8 +114,10 @@ async def get_user_profile(request: Request, db: AsyncSession = Depends(get_db))
     if not user_id:
         # If somehow no user_id is set, raise 401
         raise HTTPException(status_code=401, detail=f"no user_id in token") 
-    
-    user = await check_cache(user_id=user_id)
+    try:
+        user = await check_cache(user_id=user_id)
+    except Exception as e:
+        pass
     if not user:
         result = await db.execute(select(User).filter_by(id=user_id))
         user = result.scalars().first()   
@@ -126,9 +127,5 @@ async def get_user_profile(request: Request, db: AsyncSession = Depends(get_db))
     # fastapi automatically gets from user just the relevant fields for UserProfile pydantic schema
     return user
 
-@app.get("/health", status_code=status.HTTP_200_OK)
-async def health_check():
-    return {"status": "OK"}
-
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8080, reload=True)
+    uvicorn.run("main:app", host="127.0.0.1", port=8080, reload=True)

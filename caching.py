@@ -1,25 +1,26 @@
 import os 
 from dotenv import load_dotenv
-import redis as rd
+import redis.asyncio as rd_async
 import json
 
 load_dotenv()
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
 REDIS_PORT = int(os.getenv("REDIS_PORT", "6379"))
-REDIS_DB = 0
+REDIS_PASSWORD = os.getenv("REDIS_PASSWORD", None)
 
-# Create a global Redis client
-redis_client = rd.Redis(
+redis_client = rd_async.Redis(
     host=REDIS_HOST,
     port=REDIS_PORT,
-    db=REDIS_DB,
+    db=0,
+    password=REDIS_PASSWORD,
+    decode_responses=True
 )
 
 async def check_cache(user_id: int):
     cache_key = f"user:{user_id}"
-    cache_user = redis_client.get(cache_key)
+    cache_user = await redis_client.get(cache_key)
     if cache_user:
-        user = json.loads(cache_user.decode("utf-8"))
+        user = json.loads(cache_user)
         return user
     return None
 
@@ -30,7 +31,8 @@ async def update_cache(user):
         "last_name": user.last_name,
         "email": user.email
     }
-    redis_client.set(cache_key, json.dumps(user_dict))
+    
+    await redis_client.set(cache_key, json.dumps(user_dict))
 
     
     

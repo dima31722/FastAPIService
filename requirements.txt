@@ -96,7 +96,7 @@ pytest-cov
 
 #caching
 redis
-
+aioredis
 #email validation
 email-validator
 pydantic[email]
