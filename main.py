@@ -1,14 +1,20 @@
 from fastapi import FastAPI, HTTPException, Depends, Request, status
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+import uvicorn
+from contextlib import asynccontextmanager
+
 from database import Base, engine, get_db
 from models import User
 from schemas import UserCreate, UserLogin, UserUpdate, UserProfile
-from sqlalchemy.future import select
-from sqlalchemy.ext.asyncio import AsyncSession
-from authentication import create_hash_password, verify_hashing, create_token, TokenAuthorizationMiddleware
+from authentication import (
+    create_hash_password,
+    verify_hashing,
+    create_token,
+    TokenAuthorizationMiddleware
+)
 from caching import check_cache, update_cache
-import uvicorn
-from contextlib import asynccontextmanager
 
 #on startup of the application - run the database
 @asynccontextmanager
@@ -128,5 +134,14 @@ async def get_user_profile(request: Request, db: AsyncSession = Depends(get_db))
     # fastapi automatically gets from user just the relevant fields for UserProfile pydantic schema
     return user
 
+def start():
+    config = uvicorn.Config("main:app", host="127.0.0.1", port=8080, reload=True)
+    server = uvicorn.Server(config)
+    server.run()
+
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8080, reload=True)
+    start()
+
+
+# if __name__ == "__main__":
+#     uvicorn.run("main:app", host="127.0.0.1", port=8080, reload=True)
