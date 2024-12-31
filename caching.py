@@ -3,10 +3,11 @@ from dotenv import load_dotenv
 import redis as rd
 import json
 
+load_dotenv()
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
-REDIS_PORT = os.getenv("REDIS_PORT", "6379")
-REDIS_DB = 0  # default
-PASSWORD = os.getenv("REDIS_PASSWORD", None)
+REDIS_PORT = int(os.getenv("REDIS_PORT", "6379"))
+REDIS_DB = 0
+
 # Create a global Redis client
 redis_client = rd.Redis(
     host=REDIS_HOST,
@@ -16,10 +17,11 @@ redis_client = rd.Redis(
 
 async def check_cache(user_id: int):
     cache_key = f"user:{user_id}"
-    cache_user = await redis_client.get(cache_key)
+    cache_user = redis_client.get(cache_key)
     if cache_user:
-        user = json.loads(cache_user.encode("utf-8"))
-    return user
+        user = json.loads(cache_user.decode("utf-8"))
+        return user
+    return None
 
 async def update_cache(user): 
     cache_key = f"user:{user.id}"
@@ -28,6 +30,7 @@ async def update_cache(user):
         "last_name": user.last_name,
         "email": user.email
     }
-    await redis_client.set(cache_key, json.dumps(user_dict))
+    redis_client.set(cache_key, json.dumps(user_dict))
+
     
     

@@ -52,6 +52,7 @@ async def register_user(req:UserCreate, db: AsyncSession = Depends(get_db)):
     )
 
     db.add(new_user)
+    db.refresh(new_user)
 
     return f"user with email: {new_user.email} - created successfully"
     
@@ -88,20 +89,24 @@ async def update_user(req:UserUpdate, request:Request, db: AsyncSession = Depend
         raise HTTPException(status_code=404, detail=f"User not found")
     
     #for every variable - checking if exists in the request
+    if req.email is not None:
+        result = await db.execute(select(User).filter_by(email=req.email))
+        check_user = result.scalars().first()
+        if check_user:
+            raise HTTPException(status_code=500, detail=f"email already exists in database")
+        user.email = req.email
     if req.first_name is not None:
         user.first_name = req.first_name
     if req.last_name is not None:
         user.last_name = req.last_name
-    if req.email is not None:
-        user.email = req.email
     if req.password is not None:
         # You might want to hash the new password before storing
         user.password = create_hash_password(req.password)
     try:
-        update_cache(user)
+        await update_cache(user)
     except rd.exceptions.RedisError as e:
         pass
-    
+
     return {"message": "User updated successfully", "username": f"{user.first_name} {user.last_name}"}
 
 @app.get("/profile", response_model=UserProfile, status_code=status.HTTP_200_OK)
@@ -111,16 +116,13 @@ async def get_user_profile(request: Request, db: AsyncSession = Depends(get_db))
         # If somehow no user_id is set, raise 401
         raise HTTPException(status_code=401, detail=f"no user_id in token") 
     
-    try:
-        user = check_cache(user_id=user_id)
-    except rd.exceptions.RedisError as e:
-        pass
-    
-    result = await db.execute(select(User).filter_by(id=user_id))
-    user = result.scalars().first()   
+    user = await check_cache(user_id=user_id)
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    
+        result = await db.execute(select(User).filter_by(id=user_id))
+        user = result.scalars().first()   
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
     # fastapi automatically gets from user just the relevant fields for UserProfile pydantic schema
     return user
 
