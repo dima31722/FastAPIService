@@ -114,6 +114,7 @@ async def get_user_profile(request: Request, db: AsyncSession = Depends(get_db))
     if not user_id:
         # If somehow no user_id is set, raise 401
         raise HTTPException(status_code=401, detail=f"no user_id in token") 
+    user = None
     try:
         user = await check_cache(user_id=user_id)
     except Exception as e:

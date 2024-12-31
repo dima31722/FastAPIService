@@ -47,6 +47,8 @@
       - password in line : requirepass "mypassword123"
       - host in line: bind 127.0.0.1
 
+3. - if redis server won't run or assosiated to fastAPI server - will fetch data from database
+
 
 ## .env file
 1. create .env file for the project with this env variables:
