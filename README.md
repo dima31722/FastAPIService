@@ -16,7 +16,7 @@
    cd FastAPIService
    ```
 
-2. Create virtual enviroment and Install packages:
+2. Create virtual environment and Install packages:
    ```bash
    python -m venv venv 
    venv/Scripts/activate
@@ -27,7 +27,7 @@
 ## SQL connection
 
 1. create user in mysql:
-   ```cmd
+   ```bash
    mysql -u root -p
    CREATE DATABASE users; 
    CREATE USER 'new_user'@'localhost' IDENTIFIED BY 'password'; 
@@ -39,13 +39,15 @@
 ## redis connection 
 
 1. test redis server is running:
-   makesure redis is running, pings and authenticated 
+   - check redis server is running
+      - redis-cli ping (expected: PONG)
+   - check server can run throw windows firewall
 
 
 ## .env file
 1. create .env file for the project with this env variables:
-   -enter missing variables or change according to your setup 
-   ```
+   ### enter missing variables or change according to your setup 
+   ```bash
    MYSQL_USER = 
    MYSQL_PASSWORD = 
    MYSQL_HOST = localhost #default
@@ -61,20 +63,22 @@
    ```
 
 ## run the project 
-   ```powershell
+   ```bash
    python main.py
 
-   -should be - "http://127.0.0.1:8080"
+   - should be: "http://127.0.0.1:8080"
    ```
 
 ## run test file curl
 1. check that curl and jq installed in your bash
    ```bash
+   curl --version
+   jq --version
    chmod +x test_service.sh
    ./test_service.sh
    ```
 
-   created test_service.log file 
+   - test_service.log - file with the logs from curl test
 
 
 
