@@ -45,7 +45,7 @@
 ## .env file
 1. create .env file for the project with this env variables:
    -enter missing variables or change according to your setup 
-
+   ```
    MYSQL_USER = 
    MYSQL_PASSWORD = 
    MYSQL_HOST = localhost #default
@@ -58,14 +58,14 @@
    REDIS_HOST = 
    REDIS_PORT = "6379" #default
    REDIS_PASSWORD = 
-   
+   ```
 
 ## run the project 
-    ```powershell
-    python main.py
-   ```
-    -should be - "http://127.0.0.1:8080"
+   ```powershell
+   python main.py
 
+   -should be - "http://127.0.0.1:8080"
+   ```
 
 ## run test file curl
 1. check that curl and jq installed in your bash
