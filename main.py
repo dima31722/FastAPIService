@@ -126,6 +126,9 @@ async def get_user_profile(request: Request, db: AsyncSession = Depends(get_db))
     # fastapi automatically gets from user just the relevant fields for UserProfile pydantic schema
     return user
 
+@app.get("/health", status_code=status.HTTP_200_OK)
+async def health_check():
+    return {"status": "OK"}
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8080, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8080, reload=True)

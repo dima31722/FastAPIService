@@ -56,7 +56,8 @@ isort
 psycopg2-binary        # PostgreSQL driver
 mysqlclient 
 pymysql           # MySQL driver
-sqlalchemy[asyncio] asyncpg
+sqlalchemy[asyncio] 
+asyncpg
 aiomysql
 # ----------------------------
 # Environment Variables

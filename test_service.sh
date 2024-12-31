@@ -1,5 +1,8 @@
+# Wait for the FastAPI app to be available - for docker containarization
+# ./wait-for-it.sh app:8080 --timeout=30 --strict -- echo "FastAPI is up and running"
+
 # Base URL of the API
-BASE_URL="http://127.0.0.1:8080"
+BASE_URL="http://0.0.0.0:8080"
 
 # Log file
 LOG_FILE="test_service.log"

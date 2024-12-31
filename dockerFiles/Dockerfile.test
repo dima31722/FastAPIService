@@ -1,0 +1,17 @@
+# Use a lightweight base image with curl and jq
+FROM alpine:3.16
+
+# Install curl and jq
+RUN apk add --no-cache curl jq bash
+
+# Set work directory
+WORKDIR /tests
+
+# Copy the test script into the container
+COPY test_service.sh .
+
+# Make the test script executable
+RUN chmod +x test_service.sh
+
+# Entry point to execute the test script
+ENTRYPOINT ["./test_service.sh"]
